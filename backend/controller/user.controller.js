@@ -165,9 +165,9 @@ export const updateProfile = async(req,res) => {
         })
 
     } catch(error) {
-        console.error("Error in registerUpdate",error.message)
+        console.error("Error in updateProfile",error.message)
         return res.status(500).json({
-            message:"Unexpected error in ",
+            message:"Unexpected error in updateProfile",
             success:false
         })
     }
