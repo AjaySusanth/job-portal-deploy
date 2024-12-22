@@ -1,6 +1,6 @@
 import { User } from "../models/user.model.js"
 import bcrypt from 'bcryptjs'
-import jwt from 'jwt'
+import jwt from 'jsonwebtoken'
 
 export const register = async(req,res) =>{
     const {name,email,password,phoneNumber,role} = req.body
@@ -24,7 +24,7 @@ export const register = async(req,res) =>{
 
         const hashedPassword =await bcrypt.hash(password,10)
 
-        await user.create({
+        user = await User.create({
             name,
             email,
             phoneNumber,
@@ -39,7 +39,6 @@ export const register = async(req,res) =>{
             phoneNumber:user.phoneNumber,
             role:user.role
         }
-
         return res.status(201).json({
             message:"Accound registered successfully",
             success:true,
@@ -67,9 +66,17 @@ export const login = async(req,res) =>{
 
     try {
         let user = await User.findOne({email})
+    
+        if(!user) {
+            return res.status(401).json({
+                message:"Invalid email or password",
+                success:false
+            })
+        }
+
         const isPasswordValid = await bcrypt.compare(password,user.password)
     
-        if(!user || !isPasswordValid) {
+        if(!isPasswordValid) {
             return res.status(401).json({
                 message:"Invalid email or password",
                 success:false
@@ -80,7 +87,7 @@ export const login = async(req,res) =>{
             userId:user._id
         }
 
-        const token = await jwt.sign(tokenData,procces.env.JWT_SECRET,{expiresIn:'5d'})
+        const token = await jwt.sign(tokenData,process.env.JWT_SECRET,{expiresIn:'5d'})
 
         user = {
             _id:user._id,
@@ -94,15 +101,15 @@ export const login = async(req,res) =>{
         .cookie("token",token,{maxAge:5*24*60*60*100,httpOnly:true,sameSite:'strict'})
         .json({
             message:"User logged in succesfully",
-            success:true
+            success:true,
+            user
         })
 
     } catch(error) {
         console.error("Error in login",error.message)
         return res.status(500).json({
             message:"Unexpected error in login",
-            success:false,
-            user
+            success:false
         })
     }
 }
@@ -155,7 +162,9 @@ export const updateProfile = async(req,res) => {
             name:user.name,
             email:user.email,
             phoneNumber:user.phoneNumber,
-            role:user.role
+            role:user.role,
+            bio:user.profile.bio,
+            skills:user.profile.skills
         }
 
         return res.status(200).json({
