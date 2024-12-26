@@ -55,9 +55,9 @@ export const register = async(req,res) =>{
 }
 
 export const login = async(req,res) =>{
-    const{email,password} = req.body
+    const{email,password,role} = req.body
     
-    if(!email || !password) {
+    if(!email || !password || !role) {
         return res.status(400).json({
             message:"All fields are required",
             success:false
@@ -73,6 +73,13 @@ export const login = async(req,res) =>{
                 success:false
             })
         }
+
+        if (role !== user.role) {
+            return res.status(400).json({
+                message: "Account doesn't exist with current role.",
+                success: false
+            })
+        };
 
         const isPasswordValid = await bcrypt.compare(password,user.password)
     
