@@ -10,7 +10,6 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 const Profile = () => {
-    const isResume = true;
 
     const {user} = useSelector(store=>store.auth)
 
@@ -23,7 +22,7 @@ const Profile = () => {
                 <div className='flex justify-between'>
                     <div className='flex items-center gap-4'>
                         <Avatar className="h-24 w-24">
-                            <AvatarImage src="https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg" alt="profile" />
+                            <AvatarImage src={user?.profile?.profilePhoto || "https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg"} alt="profile" />
                         </Avatar>
                         <div>
                             <h1 className='font-medium text-xl'>{user?.name}</h1>
@@ -43,17 +42,17 @@ const Profile = () => {
                     </div>
                 </div>
                 <div className='my-5'>
-                    <h1>Skills</h1>
+                    <h1 className="text-md font-bold">Skills</h1>
                     <div className='flex items-center gap-1'>
                         {
-                            user?.profile?.skills.length !== 0 ? user?.profile?.skills.map((item, index) => <Badge key={index}>{item}</Badge>) : <span>NA</span>
+                            user?.profile?.skills.length !== 0 ? user?.profile?.skills.map((item, index) => <Badge key={index}>{item}</Badge>) : <span>No skills added</span>
                         }
                     </div>
                 </div>
                 <div className='grid w-full max-w-sm items-center gap-1.5'>
                 <Label className="text-md font-bold">Resume</Label>
                     {
-                        isResume ? <a target='blank' href={user?.profile?.resume} className='text-blue-500 w-full hover:underline cursor-pointer'>{user?.profile?.resumeOriginalName}</a> : <span>NA</span>
+                        user?.profile?.resume ? <a target='blank' href={user?.profile?.resume} className='text-blue-500 w-full hover:underline cursor-pointer'>{user?.profile?.resumeOriginalName}</a> : <span>No resume added</span>
                     }
                 </div>
             </div>

@@ -6,6 +6,7 @@ import cloudinary from "../utlis/cloudinary.js"
 
 export const register = async(req,res) =>{
     const {name,email,password,phoneNumber,role} = req.body
+    const file = req.file
 
     if(!name|| !email || !password || !phoneNumber || !role) {
         return res.status(400).json({
@@ -13,6 +14,8 @@ export const register = async(req,res) =>{
             success:false
         })
     }
+
+    
 
     try{
         let user = await User.findOne({email})
@@ -26,12 +29,18 @@ export const register = async(req,res) =>{
 
         const hashedPassword =await bcrypt.hash(password,10)
 
+        const fileUri = getDataUri(file)
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content)
+
         user = await User.create({
             name,
             email,
             phoneNumber,
             password:hashedPassword,
-            role
+            role,
+            profile:{
+                profilePhoto:cloudResponse.secure_url
+            }
         })
 
         user = {
