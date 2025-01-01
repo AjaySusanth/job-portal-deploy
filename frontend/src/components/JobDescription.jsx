@@ -1,26 +1,47 @@
 import { useParams } from "react-router-dom"
 import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { setSingleJob } from "@/redux/jobSlice"
 import axios from "axios"
 import { toast } from "sonner"
-import { JOB_API_END_POINT } from "@/utils/constants"
+import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "@/utils/constants"
 
 const JobDescription = () => {
-    const isApplied =true
     const params = useParams()
     const jobId = params.id;
     const {singleJob} = useSelector(store=>store.job)
     const {user} = useSelector(store=>store.auth)
     const dispatch = useDispatch()
+
+    const isInitiallyApplied = singleJob?.applications?.some(application=>application?.applicant == user?._id) || false
+    console.log(isInitiallyApplied)
+    const [isApplied,setIsApplied] = useState(isInitiallyApplied)
+
+    const handleApply = async() => {
+        try {
+            const res = await axios.get(`${APPLICATION_API_END_POINT}/${jobId}/apply`,{withCredentials:true})
+
+            if(res.data.success) {
+                setIsApplied(true)
+                const updatedSingleJob = {...singleJob,applications:[...singleJob.applications,{applicant:user?._id}]}
+                dispatch(setSingleJob(updatedSingleJob))
+                toast.success(res.data.message)
+            }
+        } catch (error) {
+            console.error(error.message)
+            toast.error(error.response.data.message)
+        }
+    }
+
     useEffect(()=> {
         const fetchSingleJob = async() =>{
             try {
                 const res = await axios.get(`${JOB_API_END_POINT}/get/${jobId}`,{withCredentials:true})
                 if(res.data.success) {
-                    dispatch(setSingleJob(res.data.job))   
+                    dispatch(setSingleJob(res.data.job))
+                    setIsApplied(singleJob?.applications?.some(application=>application?.applicant == user?._id)    )
                 }
             } catch (error) {
                 console.error(error.message)
@@ -29,7 +50,7 @@ const JobDescription = () => {
         }
         fetchSingleJob()
     },[jobId,user?._id,dispatch])
-    console.log(singleJob)
+
     return (
         <div className='max-w-7xl mx-auto my-10'>
             <div className='flex items-center justify-between'>
@@ -42,6 +63,7 @@ const JobDescription = () => {
                     </div>
                 </div>
                 <Button
+                    onClick={handleApply}
                     disabled={isApplied}
                     className={`rounded-lg ${isApplied ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#7209b7] hover:bg-[#5f32ad]'}`}>
                     {isApplied ? 'Already Applied' : 'Apply Now'}
