@@ -13,11 +13,11 @@ const Navbar = () => {
     const { user } = useSelector(store => store.auth)
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const handleLogout = async() => {
+    const handleLogout = async () => {
         try {
-            const res = await axios.get(`${USER_API_END_POINT}/logout`,{withCredentials:true})
+            const res = await axios.get(`${USER_API_END_POINT}/logout`, { withCredentials: true })
 
-            if(res.data.success) {
+            if (res.data.success) {
                 dispatch(setUser(null))
                 navigate("/")
                 toast.success(res.data.message)
@@ -37,9 +37,20 @@ const Navbar = () => {
                 </div>
                 <div className="flex gap-12 items-center">
                     <ul className="flex font-medium items-center gap-5">
-                        <li><Link to='/'>Home</Link></li>
-                        <li><Link to='/jobs'>Jobs</Link></li>
-                        <li><Link to='/browse'>Browse</Link></li>
+                        {
+                            user && user.role == 'recruiter' ? (
+                                <>
+                                    <li><Link to='/admin/companies'>Companies</Link></li>
+                                    <li><Link to='/admin/jobs'>Jobs</Link></li>
+                                </>
+                            ) : (
+                                <>
+                                    <li><Link to='/'>Home</Link></li>
+                                    <li><Link to='/jobs'>Jobs</Link></li>
+                                    <li><Link to='/browse'>Browse</Link></li>
+                                </>
+                            )
+                        }
                     </ul>
 
                     {
@@ -70,12 +81,16 @@ const Navbar = () => {
                                             </div>
                                         </div>
                                         <div className='flex flex-col my-2 text-gray-600'>
-                                            <div className='flex w-fit items-center gap-2 cursor-pointer'>
-                                                <User2 />
-                                                <Button variant="link">
-                                                    <Link to='/profile'>View Profile</Link>
-                                                </Button>
-                                            </div>
+                                            {
+                                                user && user.role == 'student' && (
+                                                    <div className='flex w-fit items-center gap-2 cursor-pointer'>
+                                                    <User2 />
+                                                    <Button variant="link">
+                                                        <Link to='/profile'>View Profile</Link>
+                                                    </Button>
+                                                </div>
+                                                )
+                                            }
                                             <div className='flex w-fit items-center gap-2 cursor-pointer'>
                                                 <LogOut />
                                                 <Button onClick={handleLogout} variant="link">Logout</Button>
