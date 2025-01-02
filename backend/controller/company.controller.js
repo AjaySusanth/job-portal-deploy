@@ -79,13 +79,13 @@ export const getCompany = async(req,res) =>{
         if(!companies) {
             return res.status(404).json({
                 message:"No companies registered by the user",
-                succes:false
+                success:false
             })
         }
 
         res.status(200).json({
             message:"Companies retrieved successfully",
-            succes:true,
+            success:true,
             companies
         })
     } catch(error) {
