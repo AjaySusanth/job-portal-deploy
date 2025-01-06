@@ -12,6 +12,12 @@ export const createJob = async(req,res) => {
             success:false
         })
     }
+    if(position <=0) {
+        return res.status(400).json({
+            message:"No.of positions must be valid",
+            success:false
+        })
+    }
 
     try {
         const company = await Company.findById(companyId);
