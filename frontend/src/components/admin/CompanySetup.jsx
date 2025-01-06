@@ -8,13 +8,15 @@ import axios from "axios"
 import { COMPANY_API_END_POINT } from "@/utils/constants"
 import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "sonner"
-import { setSingleCompany } from "@/redux/companySlice"
 import { useSelector } from "react-redux"
+import useGetCompanyById from "@/hooks/useGetCompanyById"
 
 const CompanySetup = () => {
+    
     const {singleCompany} = useSelector(store=>store.company)
     const navigate = useNavigate()
     const params = useParams()
+    useGetCompanyById(params.id)
     const [loading,setLoading] = useState(false)
     const [input,setInput] = useState({
         name: "",
@@ -75,7 +77,9 @@ const CompanySetup = () => {
             <div className='max-w-xl mx-auto my-10'>
                 <form onSubmit={handleSubmit}>
                     <div className='flex items-center gap-24 p-8'>
-                        <Button onClick={()=>navigate('/admin/companies')} variant="outline" className="flex items-center gap-2 text-gray-500 font-semibold">
+                        <Button 
+                        type='button'
+                        onClick={()=>navigate('/admin/companies')} variant="outline" className="flex items-center gap-2 text-gray-500 font-semibold">
                             <ArrowLeft />
                             <span>Back</span>
                         </Button>

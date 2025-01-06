@@ -44,10 +44,13 @@ export const updateCompany = async(req,res) => {
     const {name,description,location,website} = req.body;
     const file = req.file
     try {
-        const fileUri = getDataUri(file)
-        const cloudResponse = await cloudinary.uploader.upload(fileUri.content)
-        const logo = cloudResponse.secure_url
-        const updateData = {name,description,location,website,logo};
+        let logo;
+        if(file) {
+            const fileUri = getDataUri(file)
+            const cloudResponse = await cloudinary.uploader.upload(fileUri.content)
+            logo = cloudResponse.secure_url
+        }
+        const updateData = {name,description,location,website,...(logo && {logo})};
 
         const company = await Company.findByIdAndUpdate(req.params.id,updateData,{new:true})
 
@@ -75,7 +78,7 @@ export const updateCompany = async(req,res) => {
 export const getCompany = async(req,res) =>{
     const userId = req.id
     try{
-        const companies = await Company.find({userId});
+        const companies = await Company.find({userId}).sort({createdAt:-1});
         if(!companies) {
             return res.status(404).json({
                 message:"No companies registered by the user",
