@@ -8,13 +8,11 @@ import { setAllApplicants } from "@/redux/applicationSlice"
 
 const Applicants = () => {
   const {allApplicants} = useSelector(store=>store.application)
-  console.log("Applicats store",allApplicants)
   const params = useParams()
   const dispatch = useDispatch()
   const fetchAllApplicants = async() => {
     try {
       const res = await axios.get(`${APPLICATION_API_END_POINT}/${params.id}/applicants`,{withCredentials:true})
-      console.log("Applicants res",res)
       if(res.data.success) {
         dispatch(setAllApplicants(res.data.applicants))
       }
