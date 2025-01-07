@@ -8,13 +8,14 @@ import AppliedJobTable from "./AppliedJobTable";
 import UpdateProfileDialogBox from "./UpdateProfileDialogBox";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import useGetAppliedJobs from "@/hooks/useGetAppliedJobs";
 
 const Profile = () => {
 
     const {user} = useSelector(store=>store.auth)
 
     const [open,setOpen] = useState(false) 
-
+    useGetAppliedJobs()
     return (
         <div>
             <Navbar />
