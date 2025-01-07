@@ -4,7 +4,7 @@ import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { RadioGroup } from "../ui/radio-group"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import axios from "axios"
 import { USER_API_END_POINT } from "@/utils/constants.js"
@@ -16,12 +16,18 @@ const Login = () => {
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const {loading} = useSelector(store=>store.auth)
+    const {loading,user} = useSelector(store=>store.auth)
     const [input, setInput] = useState({
         email: "",
         password: "",
         role: "",
     })
+
+    useEffect(()=>{
+        if(user) {
+            navigate("/")
+        }
+    },[])
 
     const changeEventHandler = (e) => {
         setInput({ ...input, [e.target.name]: e.target.value })

@@ -1,8 +1,19 @@
+import { useDispatch, useSelector } from "react-redux";
 import JobCard from "./JobCard";
 import Navbar from "./shared/Navbar"
+import useGetAllJobs from "@/hooks/useGetAllJobs";
+import { useEffect } from "react";
+import { setJobSearch } from "@/redux/jobSlice";
 
 const Browse = () => {
-    const allJobs = [1, 2, 4, 5, 6];
+    useGetAllJobs()
+    const {allJobs} = useSelector(store=>store.job)
+    const dispatch = useDispatch()
+    useEffect(()=>{
+        return ()=> {
+            dispatch(setJobSearch(""))
+        }
+    },[])
     return (
         <div>
             <Navbar />
@@ -12,7 +23,7 @@ const Browse = () => {
                     {
                         allJobs.map((job) => {
                             return (
-                                <JobCard/>
+                                <JobCard job={job} key={job?._id}/>
                             )
                         })
                     }
