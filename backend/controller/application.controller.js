@@ -103,7 +103,6 @@ export const getApplicants = async(req,res) =>{
                 success:false
             })
         }
-
         res.status(200).json({
             success:true,
             applicants

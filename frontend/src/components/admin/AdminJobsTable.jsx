@@ -1,4 +1,4 @@
-import { Edit2, MoreHorizontal } from "lucide-react"
+import { Eye, MoreHorizontal } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 import { useSelector } from "react-redux"
@@ -6,17 +6,16 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 const AdminJobsTable = () => {
-    const {allAdminJobs,searchJob} = useSelector(store=>store.job)
-    console.log(allAdminJobs)
-    const [filterAdminJob,setFilterAdminJob] = useState(allAdminJobs)
+    const { allAdminJobs, searchJob } = useSelector(store => store.job)
+    const [filterAdminJob, setFilterAdminJob] = useState(allAdminJobs)
     const navigate = useNavigate()
-    useEffect(()=>{
-        const filteredJobs = allAdminJobs.length > 0 ? allAdminJobs.filter((job)=>{
-            if(!searchJob) return true;
+    useEffect(() => {
+        const filteredJobs = allAdminJobs.length > 0 ? allAdminJobs.filter((job) => {
+            if (!searchJob) return true;
             return job?.company?.name.toLowerCase().includes(searchJob.toLowerCase()) || job?.title.toLowerCase().includes(searchJob.toLowerCase())
         }) : []
         setFilterAdminJob(filteredJobs)
-    },[allAdminJobs,searchJob])
+    }, [allAdminJobs, searchJob])
     return (
         <div>
             <Table>
@@ -43,13 +42,11 @@ const AdminJobsTable = () => {
                                             <TableCell>{job?.createdAt.split("T")[0]}</TableCell>
                                             <TableCell className="text-right cursor-pointer">
                                                 <Popover>
-                                                    <PopoverTrigger><MoreHorizontal/></PopoverTrigger>
+                                                    <PopoverTrigger><MoreHorizontal /></PopoverTrigger>
                                                     <PopoverContent className="w-32">
-                                                        <div className='flex items-center gap-2 w-fit cursor-pointer'
-                                                            onClick={() => navigate(`/admin/companies/${job?._id}`)}
-                                                        >
-                                                            <Edit2 className='w-4' />
-                                                            <span>Edit</span>
+                                                        <div onClick={() => navigate(`/admin/jobs/${job._id}/applicants`)} className='flex items-center w-fit gap-2 cursor-pointer mt-2'>
+                                                            <Eye className='w-4' />
+                                                            <span>Applicants</span>
                                                         </div>
                                                     </PopoverContent>
                                                 </Popover>
