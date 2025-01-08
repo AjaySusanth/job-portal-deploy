@@ -13,6 +13,7 @@ import { setSingleCompany } from "@/redux/companySlice"
 const CreateCompany = () => {
     const navigate = useNavigate()
     const [company,setCompany] = useState('')
+    console.log(company)
     const dispatch = useDispatch()
     const registerCompany = async() => {
         try {
