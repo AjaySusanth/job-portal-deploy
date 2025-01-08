@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 
 const AppliedJobTable = () => {
     const {appliedJobs} = useSelector(store=>store.job)
+    console.log("Jobs",appliedJobs)
     return (
         <div>
             <Table>
