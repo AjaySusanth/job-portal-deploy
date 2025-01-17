@@ -13,7 +13,7 @@ dotenv.config()
 const app = express()
 
 const corsOptions = {
-    origin:'https://job-portal-live.vercel.app',
+    origin:'*',
     credentials:true
 }
 app.use(cors(corsOptions));
