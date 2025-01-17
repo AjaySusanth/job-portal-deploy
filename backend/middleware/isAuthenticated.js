@@ -9,17 +9,13 @@ const isAuthenticated = async(req,res,next) => {
     })
 
     try{     
-        const decoded = await jwt.verify(token,process.env.JWT_SECRET);
-        if(!decoded) return res.status(401).json({
-            message:"Invalid token",
-            success:false
-        })
+        const decoded =jwt.verify(token,process.env.JWT_SECRET);
         req.id = decoded.userId;
         next()
     } catch(error) {
         console.error("Error in verifying token",error.message)
         return res.status(500).json({
-            message:"Unexpected error in verfying token",
+            message: "Invalid or expired token, Please Login again",
             success:false
         })
     }
