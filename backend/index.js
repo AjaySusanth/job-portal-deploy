@@ -13,10 +13,12 @@ dotenv.config()
 const app = express()
 
 const corsOptions = {
-    origin:'*',
-    credentials:true
-}
+    origin: 'https://job-portal-live.onrender.com', // Use the exact origin of your frontend
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight requests
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({extended:true}))
